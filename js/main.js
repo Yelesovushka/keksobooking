@@ -5,15 +5,19 @@ var CHECK_TIME = ['12:00', '13:00', '14:00'];
 var FEAUTURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var COUNT = 8;
-var pins = [];
+var map = document.querySelector('.map');
+var mapPin = document.querySelector('.map__pin');
+var pinTemplate = document.querySelector('#pin')
+    .content
+    .querySelector('.map__pin');
 
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function createPin() {
-  var locationX = getRandomNumber(0, map.offsetWidth);
-  var locationY = getRandomNumber(130, 630);
+  var locationY = getRandomNumber(-250, 200);
+  var locationX = getRandomNumber((-map.offsetWidth / 2), (map.offsetWidth / 2) - 50);
 
   return {
     author: {
@@ -39,17 +43,15 @@ function createPin() {
   };
 }
 
-for (var i = 0; i < COUNT; i++) {
-  pins.push(createPin());
+function createPinsArr() {
+  var pins = [];
+
+  for (var i = 0; i < COUNT; i++) {
+    pins.push(createPin());
+  }
+
+  return pins;
 }
-
-var map = document.querySelector('.map');
-map.classList.remove('map--faded');
-
-var mapPin = document.querySelector('.map__pin');
-var pinTemplate = document.querySelector('#pin')
-    .content
-    .querySelector('.map__pin');
 
 function renderPin(pin) {
   var pinElement = pinTemplate.cloneNode(true);
@@ -63,10 +65,17 @@ function renderPin(pin) {
   return pinElement;
 }
 
-var fragment = document.createDocumentFragment();
+function renderAllPins() {
+  var fragment = document.createDocumentFragment();
+  var allPins = createPinsArr();
 
-for (i = 0; i < pins.length; i++) {
-  fragment.appendChild(renderPin(pins[i]));
+  for (var i = 0; i < allPins.length; i++) {
+    fragment.appendChild(renderPin(allPins[i]));
+  }
+
+  mapPin.appendChild(fragment);
 }
 
-mapPin.appendChild(fragment);
+map.classList.remove('map--faded');
+
+renderAllPins();
