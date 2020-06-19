@@ -6,7 +6,7 @@ var FEAUTURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditi
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var COUNT = 8;
 var map = document.querySelector('.map');
-var mapPin = document.querySelector('.map__pin');
+var mapPins = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('#pin')
     .content
     .querySelector('.map__pin');
@@ -16,8 +16,8 @@ function getRandomNumber(min, max) {
 }
 
 function createPin() {
-  var locationY = getRandomNumber(-250, 200);
-  var locationX = getRandomNumber((-map.offsetWidth / 2), (map.offsetWidth / 2) - 50);
+  var locationY = getRandomNumber(130, 560);
+  var locationX = getRandomNumber(0, map.offsetWidth - 70);
 
   return {
     author: {
@@ -73,7 +73,7 @@ function renderAllPins() {
     fragment.appendChild(renderPin(allPins[i]));
   }
 
-  mapPin.appendChild(fragment);
+  mapPins.appendChild(fragment);
 }
 
 function getRandomArrayValue(arr) {
