@@ -247,6 +247,58 @@ var roomInput = document.querySelector('#room_number');
 var guestInput = document.querySelector('#capacity');
 var checkinInput = document.querySelector('#timein');
 var checkoutInput = document.querySelector('#timeout');
+var inputs = adForm.querySelectorAll('input, select');
+var submitBtn = adForm.querySelector('.ad-form__submit');
+
+function syncRoomAndGuestInputs() {
+  if (roomInput.value === '1' && guestInput.value !== '1') {
+    roomInput.setCustomValidity('1 комната для 1 гостя');
+  } else if (roomInput.value === '2' && guestInput.value !== '1' && guestInput.value !== '2') {
+    roomInput.setCustomValidity('2 комнаты для 1 или 2 гостей');
+  } else if (roomInput.value === '3' && guestInput.value === '100') {
+    roomInput.setCustomValidity('3 комнаты для 1, 2 или 3 гостей');
+  } else if (roomInput.value === '100' && guestInput.value !== '0') {
+    roomInput.setCustomValidity('100 комнат не для гостей');
+  } else {
+    roomInput.setCustomValidity('');
+  }
+
+  if (guestInput.value === '1' && roomInput.value === '100') {
+    guestInput.setCustomValidity('Для 1 гостя - 1, 2 или 3 комнаты');
+  } else if (guestInput.value === '2' && roomInput.value !== '2' && roomInput.value !== '3') {
+    guestInput.setCustomValidity('Для 2 гостей - 2 или 3 комнаты');
+  } else if (guestInput.value === '3' && roomInput.value !== '3') {
+    guestInput.setCustomValidity('Для 3 гостей - 3 комнаты');
+  } else if (guestInput.value === '0' && roomInput.value !== '100') {
+    guestInput.setCustomValidity('100 комнат не для гостей');
+  } else {
+    guestInput.setCustomValidity('');
+  }
+}
+
+function checkValidity() {
+  var input;
+  var errorsNumber = 0;
+
+  for (var i = 0; i < inputs.length; i++) {
+    input = inputs[i];
+    if (input.checkValidity() === false) {
+      input.style.borderColor = 'red';
+      errorsNumber++;
+    } else {
+      input.style.borderColor = '#d9d9d3';
+    }
+  }
+
+  if (errorsNumber === 0) {
+    adForm.submit();
+  }
+}
+
+function onSubmitClick(evt) {
+  evt.preventDefault();
+  checkValidity();
+}
 
 titleInput.addEventListener('invalid', function () {
   if (titleInput.validity.valueMissing) {
@@ -308,32 +360,6 @@ priceInput.addEventListener('input', function () {
   }
 });
 
-roomInput.addEventListener('change', function () {
-  if (roomInput.value === '2') {
-    guestInput.options[0].disabled = true;
-    guestInput.options[1].disabled = false;
-    guestInput.options[2].disabled = false;
-    guestInput.options[3].disabled = true;
-  } else if (roomInput.value === '3') {
-    guestInput.options[0].disabled = false;
-    guestInput.options[1].disabled = false;
-    guestInput.options[2].disabled = false;
-    guestInput.options[3].disabled = true;
-  } else if (roomInput.value === '100') {
-    guestInput.options[3].disabled = false;
-    guestInput.options[3].selected = true;
-    guestInput.options[0].disabled = true;
-    guestInput.options[1].disabled = true;
-    guestInput.options[2].disabled = true;
-  } else {
-    guestInput.options[3].disabled = true;
-    guestInput.options[0].disabled = true;
-    guestInput.options[1].disabled = true;
-    guestInput.options[2].disabled = false;
-    guestInput.options[2].selected = true;
-  }
-});
-
 checkinInput.addEventListener('change', function () {
   if (checkinInput.value === '12:00') {
     checkoutInput.value = '12:00';
@@ -353,3 +379,7 @@ checkoutInput.addEventListener('change', function () {
     checkinInput.value = '14:00';
   }
 });
+
+roomInput.addEventListener('change', syncRoomAndGuestInputs);
+guestInput.addEventListener('change', syncRoomAndGuestInputs);
+submitBtn.addEventListener('click', onSubmitClick);
