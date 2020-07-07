@@ -16,6 +16,7 @@ var pinTemplate = document.querySelector('#pin')
 var mainPin = document.querySelector('.map__pin--main');
 var adForm = document.querySelector('.ad-form');
 var addressInput = document.querySelector('#address');
+var featuresList = document.querySelectorAll('.feature');
 var activePin;
 
 function getRandomNumber(min, max) {
@@ -72,6 +73,7 @@ function changeActivePin(elem) {
 
 function renderPin(pin) {
   var pinElement = pinTemplate.cloneNode(true);
+  var card = document.querySelector('.popup');
 
   pinElement.style.left = pin.location.x + 25 + 'px';
   pinElement.style.top = pin.location.y + 70 + 'px';
@@ -79,9 +81,9 @@ function renderPin(pin) {
   pinElement.querySelector('img').src = pin.author.avatar;
   pinElement.querySelector('img').alt = pin.offer.title;
 
-  pinElement.addEventListener('click', function () {
-    renderCard(pin);
-    changeActivePin(pinElement);
+  pinElement.addEventListener('click', function (evt) {
+    fillCard(pin);
+    showCard(evt, pinElement, card);
   });
 
   return pinElement;
@@ -114,13 +116,19 @@ function getRandomArray(arr) {
 }
 
 function fillFeatures(features, card) {
-  for (var i = 0; i < features.length; i++) {
-    card.querySelector('.popup__feature--' + features[i]).classList.remove('hidden');
+  for (var i = 0; i < featuresList.length; i++) {
+    featuresList[i].classList.add('hidden');
   }
+
+  for (var j = 0; j < features.length; j++) {
+    card.querySelector('.popup__feature--' + features[j]).classList.remove('hidden');
+  }
+
 }
 
 function fillPhotos(photos, card) {
   var popupPhotos = card.querySelector('.popup__photos');
+  popupPhotos.innerHTML = '';
 
   for (var i = 0; i < photos.length; i++) {
     popupPhotos.insertAdjacentHTML('beforeend', '<img src="' + photos[i] + '" class="popup__photo" width="45" height="40" alt="Фотография жилья">');
@@ -155,7 +163,10 @@ function setEndForRooms(count) {
   }
 }
 
-function setType(pin) {
+function fillCard(pin) {
+  var card = document.querySelector('.popup');
+  var title = card.querySelector('.popup__title');
+  var description = card.querySelector('.popup__description');
   var type;
 
   switch (pin.offer.type) {
@@ -172,33 +183,9 @@ function setType(pin) {
       type = 'Дворец';
   }
 
-  return type;
-}
-
-function createCard(pin) {
-  if (pin.cardNode) {
-    var card = pin.cardNode;
-  } else {
-    var cardTemplate = document.querySelector('#card')
-      .content
-      .querySelector('.map__card');
-    card = cardTemplate.cloneNode(true);
-    pin.cardNode = card;
-  }
-
-  return card;
-}
-
-function fillCard(pin) {
-  var card = createCard(pin);
-
-  var title = card.querySelector('.popup__title');
-  var description = card.querySelector('.popup__description');
-  var popupClose = card.querySelector('.popup__close');
-
   card.querySelector('.popup__text--address').textContent = pin.offer.address;
   card.querySelector('.popup__text--price').textContent = pin.offer.price + '₽/ночь';
-  card.querySelector('.popup__type').textContent = setType(pin);
+  card.querySelector('.popup__type').textContent = type;
   card.querySelector('.popup__text--capacity').textContent = pin.offer.rooms + ' ' + setEndForRooms(pin.offer.rooms) + ' для ' + pin.offer.guests + ' ' + setEndForGuests(pin.offer.guests);
   card.querySelector('.popup__text--time').textContent = 'Заезд после ' + pin.offer.checkin + ', выезд до ' + pin.offer.checkout;
   card.querySelector('.popup__avatar').src = pin.author.avatar;
@@ -210,19 +197,25 @@ function fillCard(pin) {
 
   card.classList.remove('hidden');
 
-  popupClose.addEventListener('click', function () {
-    card.classList.add('hidden');
-    changeActivePin();
-  });
-
   return card;
 }
 
-function renderCard(pin) {
+function renderCard() {
   var filterContainer = document.querySelector('.map__filters-container');
-  var card = fillCard(pin);
+  var cardTemplate = document.querySelector('#card')
+      .content
+      .querySelector('.map__card');
+  var card = cardTemplate.cloneNode(true);
+  var popupClose = card.querySelector('.popup__close');
+
+
+  card.classList.add('hidden');
 
   map.insertBefore(card, filterContainer);
+  popupClose.addEventListener('click', function (evt) {
+    hideCard(evt, card);
+  });
+
 }
 
 function hideElements(tag) {
@@ -254,12 +247,27 @@ function getAddressPin() {
 function showPage(evt) {
   if (evt.button === 0 || evt.key === 'Enter') {
     showFields('fieldset');
-    adForm.classList.remove('ad-form--disabled');
-    map.classList.remove('map--faded');
     getAddressPin();
     renderAllPins();
+    renderCard();
+    adForm.classList.remove('ad-form--disabled');
+    map.classList.remove('map--faded');
     mainPin.removeEventListener('mousedown', showPage);
     mainPin.removeEventListener('keydown', showPage);
+  }
+}
+
+function hideCard(evt, elem) {
+  if (evt.button === 0 || evt.key === 'Esc') {
+    elem.classList.add('hidden');
+    changeActivePin();
+  }
+}
+
+function showCard(evt, elem, card) {
+  if (evt.button === 0 || evt.key === 'Enter') {
+    card.classList.remove('hidden');
+    changeActivePin(elem);
   }
 }
 
