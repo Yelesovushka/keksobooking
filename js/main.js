@@ -1,23 +1,24 @@
 'use strict';
 
-// var TYPE_LIVING_ROOM = ['palace', 'flat', 'house', 'bungalo'];
-// var CHECK_TIME = ['12:00', '13:00', '14:00'];
-// var FEAUTURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-// var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-// var COUNT = 8;
+var TYPE_LIVING_ROOM = ['palace', 'flat', 'house', 'bungalo'];
+var CHECK_TIME = ['12:00', '13:00', '14:00'];
+var FEAUTURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+var COUNT = 8;
 var ROUND_PIN_SIZE = 65;
 var HEIGHT_PIN = 87;
 var map = document.querySelector('.map');
-// var mapPins = document.querySelector('.map__pins');
-// var pinTemplate = document.querySelector('#pin')
-//    .content
-//    .querySelector('.map__pin');
+var mapPins = document.querySelector('.map__pins');
+var pinTemplate = document.querySelector('#pin')
+    .content
+    .querySelector('.map__pin');
 
 var mainPin = document.querySelector('.map__pin--main');
 var adForm = document.querySelector('.ad-form');
 var addressInput = document.querySelector('#address');
+var featuresList = document.querySelectorAll('.feature');
+var activePin;
 
-/*
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -60,14 +61,30 @@ function createPinsArr() {
   return pins;
 }
 
+function changeActivePin(elem) {
+  if (activePin) {
+    activePin.classList.remove('map__pin--active');
+  }
+  if (elem) {
+    elem.classList.add('map__pin--active');
+  }
+  activePin = elem;
+}
+
 function renderPin(pin) {
   var pinElement = pinTemplate.cloneNode(true);
+  var card = document.querySelector('.popup');
 
   pinElement.style.left = pin.location.x + 25 + 'px';
   pinElement.style.top = pin.location.y + 70 + 'px';
 
   pinElement.querySelector('img').src = pin.author.avatar;
   pinElement.querySelector('img').alt = pin.offer.title;
+
+  pinElement.addEventListener('click', function (evt) {
+    fillCard(pin);
+    showCard(evt, pinElement, card);
+  });
 
   return pinElement;
 }
@@ -99,13 +116,19 @@ function getRandomArray(arr) {
 }
 
 function fillFeatures(features, card) {
-  for (var i = 0; i < features.length; i++) {
-    card.querySelector('.popup__feature--' + features[i]).classList.remove('hidden');
+  for (var i = 0; i < featuresList.length; i++) {
+    featuresList[i].classList.add('hidden');
   }
+
+  for (var j = 0; j < features.length; j++) {
+    card.querySelector('.popup__feature--' + features[j]).classList.remove('hidden');
+  }
+
 }
 
 function fillPhotos(photos, card) {
   var popupPhotos = card.querySelector('.popup__photos');
+  popupPhotos.innerHTML = '';
 
   for (var i = 0; i < photos.length; i++) {
     popupPhotos.insertAdjacentHTML('beforeend', '<img src="' + photos[i] + '" class="popup__photo" width="45" height="40" alt="Фотография жилья">');
@@ -140,11 +163,8 @@ function setEndForRooms(count) {
   }
 }
 
-function createCard(pin) {
-  var cardTemplate = document.querySelector('#card')
-      .content
-      .querySelector('.map__card');
-  var card = cardTemplate.cloneNode(true);
+function fillCard(pin) {
+  var card = document.querySelector('.popup');
   var title = card.querySelector('.popup__title');
   var description = card.querySelector('.popup__description');
   var type;
@@ -175,19 +195,28 @@ function createCard(pin) {
   fillElement(pin.offer.title, title, 'textContent');
   fillElement(pin.offer.description, description, 'textContent');
 
+  card.classList.remove('hidden');
+
   return card;
 }
 
 function renderCard() {
   var filterContainer = document.querySelector('.map__filters-container');
-  var card = createCard(createPinsArr()[0]);
+  var cardTemplate = document.querySelector('#card')
+      .content
+      .querySelector('.map__card');
+  var card = cardTemplate.cloneNode(true);
+  var popupClose = card.querySelector('.popup__close');
+
+
+  card.classList.add('hidden');
 
   map.insertBefore(card, filterContainer);
-}
-*/
+  popupClose.addEventListener('click', function (evt) {
+    hideCard(evt, card);
+  });
 
-// renderAllPins(); (временный комментарий)
-// renderCard(); (временный комментарий)
+}
 
 function hideElements(tag) {
   var elem = document.querySelectorAll(tag);
@@ -203,12 +232,6 @@ function showFields(tag) {
   }
 }
 
-function showPage() {
-  adForm.classList.remove('ad-form--disabled');
-  map.classList.remove('map--faded');
-  getAddressPin();
-}
-
 function getNumber(x, base) {
   return parseInt(x, base);
 }
@@ -221,22 +244,38 @@ function getAddressPin() {
   addressInput.value = (getNumber(mainPin.style.left, 10) + Math.round(ROUND_PIN_SIZE / 2)) + ', ' + (getNumber(mainPin.style.top, 10) + HEIGHT_PIN);
 }
 
+function showPage(evt) {
+  if (evt.button === 0 || evt.key === 'Enter') {
+    showFields('fieldset');
+    getAddressPin();
+    renderAllPins();
+    renderCard();
+    adForm.classList.remove('ad-form--disabled');
+    map.classList.remove('map--faded');
+    mainPin.removeEventListener('mousedown', showPage);
+    mainPin.removeEventListener('keydown', showPage);
+  }
+}
+
+function hideCard(evt, elem) {
+  if (evt.button === 0 || evt.key === 'Esc') {
+    elem.classList.add('hidden');
+    changeActivePin();
+  }
+}
+
+function showCard(evt, elem, card) {
+  if (evt.button === 0 || evt.key === 'Enter') {
+    card.classList.remove('hidden');
+    changeActivePin(elem);
+  }
+}
+
 hideElements('fieldset');
 getAddressRoundPin();
 
-mainPin.addEventListener('mousedown', function (evt) {
-  if (evt.button === 0) {
-    showFields('fieldset');
-    showPage();
-  }
-});
-
-mainPin.addEventListener('keydown', function (evt) {
-  if (evt.key === 'Enter') {
-    showFields('fieldset');
-    showPage();
-  }
-});
+mainPin.addEventListener('mousedown', showPage);
+mainPin.addEventListener('keydown', showPage);
 
 // валидация данных ввода, временно выделила отдельно эту часть кода для удобства, позднее сгруппирую
 
@@ -300,6 +339,26 @@ function onSubmitClick(evt) {
   checkValidity();
 }
 
+function setMinPriceOnRoom() {
+  var minPrice;
+
+  switch (typeInput.value) {
+    case 'flat':
+      minPrice = 1000;
+      break;
+    case 'bungalo':
+      minPrice = 0;
+      break;
+    case 'house':
+      minPrice = 5000;
+      break;
+    default:
+      minPrice = 10000;
+  }
+
+  return minPrice;
+}
+
 titleInput.addEventListener('invalid', function () {
   if (titleInput.validity.valueMissing) {
     titleInput.setCustomValidity('Обязательное для заполнения поле');
@@ -322,6 +381,10 @@ titleInput.addEventListener('input', function () {
   }
 });
 
+typeInput.addEventListener('change', function () {
+  priceInput.placeholder = setMinPriceOnRoom();
+});
+
 priceInput.addEventListener('invalid', function () {
   if (priceInput.validity.valueMissing) {
     priceInput.setCustomValidity('Обязательное для заполнения поле');
@@ -332,33 +395,18 @@ priceInput.addEventListener('invalid', function () {
 
 priceInput.addEventListener('input', function () {
   var value = priceInput.value;
-  var maxPrice = 1000000;
-  var minPrice;
+  var max = priceInput.max;
+  var min = setMinPriceOnRoom();
 
-  switch (typeInput) {
-    case 'flat':
-      minPrice = 1000;
-      break;
-    case 'bungalo':
-      minPrice = 0;
-      break;
-    case 'house':
-      minPrice = 5000;
-      break;
-    default:
-      minPrice = 10000;
-  }
-
-  priceInput.placeholder = minPrice;
-
-  if (value > maxPrice) {
-    priceInput.setCustomValidity('Максимальная цена превышена на ' + (value - maxPrice));
-  } else if (value < minPrice) {
-    priceInput.setCustomValidity('Минимальная цена занижена на ' + (minPrice - value));
+  if (value > max) {
+    priceInput.setCustomValidity('Максимальная цена превышена на ' + (value - max));
+  } else if (value < min) {
+    priceInput.setCustomValidity('Минимальная цена занижена на ' + (min - value));
   } else {
     priceInput.setCustomValidity('');
   }
 });
+
 
 checkinInput.addEventListener('change', function () {
   if (checkinInput.value === '12:00') {
