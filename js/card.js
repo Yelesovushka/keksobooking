@@ -3,7 +3,19 @@
 // отрисовка карточки на карте
 
 (function () {
+  var cardTemplate = document.querySelector('#card')
+        .content
+        .querySelector('.map__card');
+  var card = cardTemplate.cloneNode(true);
   var featuresList = document.querySelectorAll('.feature');
+
+  function renderCard() {
+    var map = document.querySelector('.map');
+    var filterContainer = document.querySelector('.map__filters-container');
+
+    card.classList.add('hidden');
+    map.insertBefore(card, filterContainer);
+  }
 
   function fillFeatures(features, card) {
     for (var i = 0; i < featuresList.length; i++) {
@@ -71,4 +83,6 @@
       return card;
     }
   };
+
+  renderCard();
 })();

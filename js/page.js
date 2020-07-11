@@ -10,17 +10,6 @@
   var map = document.querySelector('.map');
   var adForm = document.querySelector('.ad-form');
 
-  function renderCard() {
-    var filterContainer = document.querySelector('.map__filters-container');
-    var cardTemplate = document.querySelector('#card')
-        .content
-        .querySelector('.map__card');
-    var card = cardTemplate.cloneNode(true);
-
-    card.classList.add('hidden');
-    map.insertBefore(card, filterContainer);
-  }
-
   function getAddressPin() {
     addressInput.value = (window.helpers.getNumber(mainPin.style.left, 10) + Math.round(ROUND_PIN_SIZE / 2)) + ', ' + (window.helpers.getNumber(mainPin.style.top, 10) + HEIGHT_PIN);
   }
@@ -37,7 +26,6 @@
       showFields('fieldset');
       getAddressPin();
       window.pins.renderAllPins();
-      renderCard();
       adForm.classList.remove('ad-form--disabled');
       map.classList.remove('map--faded');
       mainPin.removeEventListener('mousedown', showPage);

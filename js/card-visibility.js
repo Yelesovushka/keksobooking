@@ -2,10 +2,7 @@
 
 // поведение карточки
 (function () {
-  var cardTemplate = document.querySelector('#card')
-        .content
-        .querySelector('.map__card');
-  var card = cardTemplate.cloneNode(true);
+  var card = document.querySelector('.popup');
   var popupClose = card.querySelector('.popup__close');
 
   window.cardVisibility = {
@@ -22,8 +19,9 @@
       if (evt.button === 0 || evt.key === 'Esc') {
         card.classList.add('hidden');
         window.pins.changeActivePin();
-        popupClose.removeEventListener('click', window.cardVisibility.hide);
       }
+
+      popupClose.removeEventListener('click', window.cardVisibility.hide);
     }
   };
 })();
