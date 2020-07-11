@@ -10,27 +10,15 @@
   var map = document.querySelector('.map');
   var adForm = document.querySelector('.ad-form');
 
-  function hideCard(evt, elem) {
-    if (evt.button === 0 || evt.key === 'Esc') {
-      elem.classList.add('hidden');
-      window.helpers.changeActivePin();
-    }
-  }
-
   function renderCard() {
     var filterContainer = document.querySelector('.map__filters-container');
     var cardTemplate = document.querySelector('#card')
         .content
         .querySelector('.map__card');
     var card = cardTemplate.cloneNode(true);
-    var popupClose = card.querySelector('.popup__close');
 
     card.classList.add('hidden');
-
     map.insertBefore(card, filterContainer);
-    popupClose.addEventListener('click', function (evt) {
-      hideCard(evt, card);
-    });
   }
 
   function getAddressPin() {

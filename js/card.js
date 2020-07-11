@@ -5,25 +5,6 @@
 (function () {
   var featuresList = document.querySelectorAll('.feature');
 
-  function setEndForGuests(number) {
-    var surplus = number % 10;
-    if (surplus === 1) {
-      return number === 11 ? 'гостей' : 'гостя';
-    }
-    return 'гостей';
-  }
-
-  function setEndForRooms(count) {
-    var surplus = count % 10;
-    if (surplus === 1) {
-      return (count === 11) ? 'комнат' : 'комната';
-    } else if (surplus >= 5) {
-      return 'комнат';
-    } else {
-      return (count >= 12 && count <= 14 || surplus === 0) ? 'комнат' : 'комнаты';
-    }
-  }
-
   function fillFeatures(features, card) {
     for (var i = 0; i < featuresList.length; i++) {
       featuresList[i].classList.add('hidden');
@@ -76,7 +57,7 @@
       card.querySelector('.popup__text--address').textContent = pin.offer.address;
       card.querySelector('.popup__text--price').textContent = pin.offer.price + '₽/ночь';
       card.querySelector('.popup__type').textContent = type;
-      card.querySelector('.popup__text--capacity').textContent = pin.offer.rooms + ' ' + setEndForRooms(pin.offer.rooms) + ' для ' + pin.offer.guests + ' ' + setEndForGuests(pin.offer.guests);
+      card.querySelector('.popup__text--capacity').textContent = pin.offer.rooms + ' ' + window.translate.setEndForRooms(pin.offer.rooms) + ' для ' + pin.offer.guests + ' ' + window.translate.setEndForGuests(pin.offer.guests);
       card.querySelector('.popup__text--time').textContent = 'Заезд после ' + pin.offer.checkin + ', выезд до ' + pin.offer.checkout;
       card.querySelector('.popup__avatar').src = pin.author.avatar;
 
