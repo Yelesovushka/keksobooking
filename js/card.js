@@ -7,7 +7,7 @@
         .content
         .querySelector('.map__card');
   var card = cardTemplate.cloneNode(true);
-  var featuresList = document.querySelectorAll('.popup__feature');
+  var featuresList = card.querySelectorAll('.popup__feature');
 
   function renderCard() {
     var map = document.querySelector('.map');
@@ -17,7 +17,7 @@
     map.insertBefore(card, filterContainer);
   }
 
-  function fillFeatures(features, card) {
+  function fillFeatures(features) {
     for (var i = 0; i < featuresList.length; i++) {
       featuresList[i].classList.add('hidden');
     }
@@ -27,7 +27,7 @@
     }
   }
 
-  function fillPhotos(photos, card) {
+  function fillPhotos(photos) {
     var popupPhotos = card.querySelector('.popup__photos');
     popupPhotos.innerHTML = '';
 
@@ -47,7 +47,6 @@
 
   window.card = {
     fillCard: function (pin) {
-      var card = document.querySelector('.popup');
       var title = card.querySelector('.popup__title');
       var description = card.querySelector('.popup__description');
       var type;
