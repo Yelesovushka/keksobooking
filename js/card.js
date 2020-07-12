@@ -7,7 +7,7 @@
         .content
         .querySelector('.map__card');
   var card = cardTemplate.cloneNode(true);
-  var featuresList = document.querySelectorAll('.feature');
+  var featuresList = document.querySelectorAll('.popup__feature');
 
   function renderCard() {
     var map = document.querySelector('.map');

@@ -70,7 +70,6 @@
 
   function renderPin(pin) {
     var pinElement = pinTemplate.cloneNode(true);
-    var card = document.querySelector('.popup');
 
     pinElement.style.left = pin.location.x + 25 + 'px';
     pinElement.style.top = pin.location.y + 70 + 'px';
@@ -80,7 +79,7 @@
 
     pinElement.addEventListener('click', function (evt) {
       window.card.fillCard(pin);
-      window.cardVisibility.show(evt, pinElement, card);
+      window.cardVisibility.show(evt, pinElement);
     });
 
     return pinElement;
