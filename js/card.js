@@ -3,7 +3,7 @@
 // отрисовка карточки на карте
 
 (function () {
-  var featuresList = document.querySelectorAll('.feature');
+  var featuresList = document.querySelectorAll('.popup__feature');
 
   function fillFeatures(features, card) {
     for (var i = 0; i < featuresList.length; i++) {

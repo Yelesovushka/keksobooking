@@ -13,9 +13,8 @@
       if (evt.button === 0 || evt.key === 'Enter') {
         card.classList.remove('hidden');
         window.pins.changeActivePin(elem);
+        popupClose.addEventListener('click', window.cardVisibility.hide);
       }
-
-      popupClose.addEventListener('click', window.cardVisibility.hide);
     },
 
     hide: function (evt) {
