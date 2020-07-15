@@ -25,7 +25,7 @@
     if (evt.button === 0 || evt.key === 'Enter') {
       showFields('fieldset');
       getAddressPin();
-      window.pins.renderAllPins();
+      window.pins.loadPins();
       adForm.classList.remove('ad-form--disabled');
       map.classList.remove('map--faded');
       mainPin.removeEventListener('mousedown', showPage);
