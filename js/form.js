@@ -135,7 +135,7 @@
 
   function resetForm(evt) {
     evt.preventDefault();
-    adForm.reset();
+    window.page.reset();
   }
 
   function onResetClick(evt) {
@@ -195,7 +195,6 @@
       priceInput.setCustomValidity('');
     }
   });
-
 
   checkinInput.addEventListener('change', function () {
     if (checkinInput.value === '12:00') {
