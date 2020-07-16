@@ -48,6 +48,13 @@
     },
     loadPins: function () {
       window.backend.load(onLoadPins);
+    },
+    resetPins: function () {
+      var allPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+
+      for (var i = 0; i < allPins.length; i++) {
+        mapPins.removeChild(allPins[i]);
+      }
     }
   };
 })();

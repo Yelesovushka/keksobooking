@@ -9,6 +9,12 @@
 
     getNumber: function (x, base) {
       return parseInt(x, base);
+    },
+
+    hideElement: function (elem) {
+      if (elem) {
+        elem.classList.add('hidden');
+      }
     }
   };
 })();

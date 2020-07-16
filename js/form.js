@@ -13,6 +13,7 @@
   var adForm = document.querySelector('.ad-form');
   var inputs = adForm.querySelectorAll('input, select');
   var submitBtn = adForm.querySelector('.ad-form__submit');
+  var resetButton = adForm.querySelector('.ad-form__reset');
 
   function syncRoomAndGuestInputs() {
     if (roomInput.value === '1' && guestInput.value !== '1') {
@@ -75,13 +76,76 @@
     }
 
     if (errorsNumber === 0) {
-      adForm.submit();
+      window.backend.upload(onUpload, onError, new FormData(adForm));
     }
   }
 
   function onSubmitClick(evt) {
     evt.preventDefault();
     checkValidity();
+  }
+
+  function onUpload() {
+    var successMessageTemplate = document.querySelector('#success')
+      .content
+      .querySelector('.success');
+    var successMessage = successMessageTemplate.cloneNode(true);
+
+    successMessage.classList.add('message');
+
+    document.body.insertAdjacentElement('afterbegin', successMessage);
+
+    document.addEventListener('click', onMessageClick);
+    document.addEventListener('keydown', onMessageKeydown);
+
+    adForm.reset();
+    window.page.reset();
+  }
+
+  function onMessageClick(evt) {
+    hideMessage(evt);
+  }
+
+  function onMessageKeydown(evt) {
+    if (evt.keyCode === 27) {
+      hideMessage(evt);
+    }
+  }
+
+  function hideMessage() {
+    var message = document.querySelector('.message');
+    document.removeEventListener('click', onMessageClick);
+    document.removeEventListener('keydown', onMessageKeydown);
+    message.remove();
+  }
+
+  function onError() {
+    var errorMessageTemplate = document.querySelector('#error')
+      .content
+      .querySelector('.error');
+    var errorMessage = errorMessageTemplate.cloneNode(true);
+
+    errorMessage.classList.add('message');
+
+    document.body.insertAdjacentElement('afterbegin', errorMessage);
+
+    document.addEventListener('click', onMessageClick);
+    document.addEventListener('keydown', onMessageKeydown);
+  }
+
+  function resetForm(evt) {
+    evt.preventDefault();
+    adForm.reset();
+  }
+
+  function onResetClick(evt) {
+    resetForm(evt);
+  }
+
+  function onResetKeydown(evt) {
+    if (evt.keyCode === 13) {
+      resetForm(evt);
+    }
   }
 
   titleInput.addEventListener('invalid', function () {
@@ -156,4 +220,6 @@
   roomInput.addEventListener('change', syncRoomAndGuestInputs);
   guestInput.addEventListener('change', syncRoomAndGuestInputs);
   submitBtn.addEventListener('click', onSubmitClick);
+  resetButton.addEventListener('click', onResetClick);
+  resetButton.addEventListener('keydown', onResetKeydown);
 })();
