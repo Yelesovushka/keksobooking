@@ -1,7 +1,5 @@
 'use strict';
 
-// поведение страницы
-
 (function () {
   var ROUND_PIN_SIZE = 65;
   var HEIGHT_PIN = 87;
@@ -11,10 +9,10 @@
   var adForm = document.querySelector('.ad-form');
 
   function getAddressPin() {
-    addressInput.value = (window.helpers.getNumber(mainPin.style.left, 10) + Math.round(ROUND_PIN_SIZE / 2)) + ', ' + (window.helpers.getNumber(mainPin.style.top, 10) + HEIGHT_PIN);
+    addressInput.value = (parseInt(mainPin.style.left, 10) + Math.round(ROUND_PIN_SIZE / 2)) + ', ' + (parseInt(mainPin.style.top, 10) + HEIGHT_PIN);
   }
 
-  function showFields(tag) {
+  function showElements(tag) {
     var elem = document.querySelectorAll(tag);
     for (var i = 0; i < elem.length; i++) {
       elem[i].removeAttribute('disabled', '');
@@ -22,13 +20,14 @@
   }
 
   function showPage() {
-    showFields('fieldset');
+    showElements('fieldset');
+    showElements('select');
     getAddressPin();
     window.pins.loadPins();
     adForm.classList.remove('ad-form--disabled');
     map.classList.remove('map--faded');
-    mainPin.removeEventListener('mousedown', showPage);
-    mainPin.removeEventListener('keydown', showPage);
+    mainPin.removeEventListener('mousedown', onPageClick);
+    mainPin.removeEventListener('keydown', onPageKeydown);
   }
 
   function onPageClick(evt) {
@@ -51,26 +50,28 @@
   }
 
   function getAddressRoundPin() {
-    addressInput.value = (window.helpers.getNumber(mainPin.style.left, 10) + Math.round(ROUND_PIN_SIZE / 2)) + ', ' + (window.helpers.getNumber(mainPin.style.top, 10) + Math.round(ROUND_PIN_SIZE / 2));
+    addressInput.value = (parseInt(mainPin.style.left, 10) + Math.round(ROUND_PIN_SIZE / 2)) + ', ' + (parseInt(mainPin.style.top, 10) + Math.round(ROUND_PIN_SIZE / 2));
   }
 
   window.page = {
     reset: function () {
       mainPin.style.top = '375px';
       mainPin.style.left = '570px';
-      hideElements();
+      hideElements('fieldset');
+      hideElements('select');
       getAddressRoundPin();
       window.pins.resetPins();
       window.helpers.hideElement(document.querySelector('.map__card'));
       window.filters.reset();
       adForm.classList.add('ad-form--disabled');
       map.classList.add('map--faded');
-      mainPin.addEventListener('mousedown', showPage);
-      mainPin.addEventListener('keydown', showPage);
+      mainPin.addEventListener('mousedown', onPageClick);
+      mainPin.addEventListener('keydown', onPageKeydown);
     }
   };
 
   hideElements('fieldset');
+  hideElements('select');
   getAddressRoundPin();
 
   mainPin.addEventListener('mousedown', onPageClick);

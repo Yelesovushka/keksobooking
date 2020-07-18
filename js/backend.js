@@ -1,8 +1,8 @@
 'use strict';
 
 (function () {
-  var loadUrl = 'https://javascript.pages.academy/keksobooking/data';
-  var uploadUrl = 'https://javascript.pages.academy/keksobooking';
+  var URL_LOAD = 'https://javascript.pages.academy/keksobooking/data';
+  var URL_UPLOAD = 'https://javascript.pages.academy/keksobooking';
   var StatusCode = {
     OK: 200
   };
@@ -28,10 +28,10 @@
 
   window.backend = {
     load: function (onLoad, onError) {
-      initXhr(onLoad, onError, 'GET', loadUrl);
+      initXhr(onLoad, onError, 'GET', URL_LOAD);
     },
     upload: function (onUpload, onError, data) {
-      initXhr(onUpload, onError, 'POST', uploadUrl, data);
+      initXhr(onUpload, onError, 'POST', URL_UPLOAD, data);
     }
   };
 })();

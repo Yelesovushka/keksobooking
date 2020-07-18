@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var FILTERS_COUNT = 5;
   var houseType = document.querySelector('#housing-type');
   var housePrice = document.querySelector('#housing-price');
   var houseRooms = document.querySelector('#housing-rooms');
@@ -13,7 +14,7 @@
 
   function filterPins() {
     var filteredPins = pinsCopy;
-    var FILTERS_COUNT = 5;
+
     filteredPins = pinsCopy.filter(function (pin) {
       var rank = 0;
 
@@ -22,6 +23,7 @@
       rank = filterBySelect(pin.offer.rooms, houseRooms, rank);
       rank = filterBySelect(pin.offer.guests, houseGuests, rank);
       rank = filterByFeatures(pin.offer.features, rank);
+
       return rank === FILTERS_COUNT;
     });
 
@@ -94,14 +96,13 @@
       pinsCopy = [];
       formFilters.removeEventListener('change', onPinsFilterChange);
 
-      for(var i = 0; i < checkboxes.length; i++) {
+      for (var i = 0; i < checkboxes.length; i++) {
         checkboxes[i].checked = false;
       }
 
-      for(var j = 0; j < selects.length; j++) {
+      for (var j = 0; j < selects.length; j++) {
         selects[j].options[0].selected = true;
       }
     }
   };
-
 })();

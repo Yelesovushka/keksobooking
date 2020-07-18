@@ -44,7 +44,7 @@
 
     mainPin.style.top = newCoords.y + 'px';
     mainPin.style.left = newCoords.x + 'px';
-    addressInput.value = window.helpers.getNumber(pickCoords.x, 10) + ', ' + window.helpers.getNumber(pickCoords.y, 10);
+    addressInput.value = parseInt(pickCoords.x, 10) + ', ' + parseInt(pickCoords.y, 10);
   }
 
   mainPin.addEventListener('mousedown', function (evt) {
@@ -75,7 +75,5 @@
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
-
   });
-
 })();

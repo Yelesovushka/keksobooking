@@ -1,7 +1,5 @@
 'use strict';
 
-// создание и отрисовка пинов
-
 (function () {
   var PIN_COUNT = 5;
   var mapPins = document.querySelector('.map__pins');
