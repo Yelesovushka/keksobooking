@@ -2,6 +2,7 @@
 
 (function () {
   var FILTERS_COUNT = 5;
+  var DEFAULT_SELECT_VALUE = 'any';
   var houseType = document.querySelector('#housing-type');
   var housePrice = document.querySelector('#housing-price');
   var houseRooms = document.querySelector('#housing-rooms');
@@ -33,7 +34,7 @@
   }
 
   function filterBySelect(pinProperty, select, rank) {
-    if (select.value === 'any' || pinProperty.toString() === select.value) {
+    if (select.value === DEFAULT_SELECT_VALUE || pinProperty.toString() === select.value) {
       rank++;
     }
     return rank;

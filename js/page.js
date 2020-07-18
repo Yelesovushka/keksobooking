@@ -3,6 +3,8 @@
 (function () {
   var ROUND_PIN_SIZE = 65;
   var HEIGHT_PIN = 87;
+  var MAIN_BUTTON_CODE = 0;
+  var ENTER_KEY_CODE = 13;
   var mainPin = document.querySelector('.map__pin--main');
   var addressInput = document.querySelector('#address');
   var map = document.querySelector('.map');
@@ -31,13 +33,13 @@
   }
 
   function onPageClick(evt) {
-    if (evt.button === 0) {
+    if (evt.button === MAIN_BUTTON_CODE) {
       showPage();
     }
   }
 
   function onPageKeydown(evt) {
-    if (evt.key === 'Enter') {
+    if (evt.keyCode === ENTER_KEY_CODE) {
       showPage();
     }
   }

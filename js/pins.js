@@ -2,6 +2,8 @@
 
 (function () {
   var PIN_COUNT = 5;
+  var PIN_HALF_WIDTH = 25;
+  var PIN_HEIGHT = 70;
   var mapPins = document.querySelector('.map__pins');
   var pinTemplate = document.querySelector('#pin')
       .content
@@ -11,8 +13,8 @@
   function createPin(pin) {
     var pinElement = pinTemplate.cloneNode(true);
 
-    pinElement.style.left = pin.location.x + 25 + 'px';
-    pinElement.style.top = pin.location.y + 70 + 'px';
+    pinElement.style.left = pin.location.x + PIN_HALF_WIDTH + 'px';
+    pinElement.style.top = pin.location.y + PIN_HEIGHT + 'px';
 
     pinElement.querySelector('img').src = pin.author.avatar;
     pinElement.querySelector('img').alt = pin.offer.title;

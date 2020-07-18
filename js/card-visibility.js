@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var ESC_KEY_CODE = 27;
+  var MAIN_BUTTON_CODE = 0;
   var card = document.querySelector('.popup');
   var popupClose = card.querySelector('.popup__close');
 
@@ -12,13 +14,13 @@
     },
 
     onEscape: function (evt) {
-      if (evt.keyCode === 27) {
+      if (evt.keyCode === ESC_KEY_CODE) {
         window.cardVisibility.hide();
       }
     },
 
     onCloseClick: function (evt) {
-      if (evt.button === 0) {
+      if (evt.button === MAIN_BUTTON_CODE) {
         window.cardVisibility.hide();
       }
     },

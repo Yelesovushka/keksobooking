@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var ESC_KEY_CODE = 27;
+  var ENTER_KEY_CODE = 13;
   var titleInput = document.querySelector('#title');
   var priceInput = document.querySelector('#price');
   var typeInput = document.querySelector('#type');
@@ -57,7 +59,7 @@
   }
 
   function onMessageKeydown(evt) {
-    if (evt.keyCode === 27) {
+    if (evt.keyCode === ESC_KEY_CODE) {
       hideMessage(evt);
     }
   }
@@ -95,7 +97,7 @@
   }
 
   function onResetKeydown(evt) {
-    if (evt.keyCode === 13) {
+    if (evt.keyCode === ENTER_KEY_CODE) {
       evt.preventDefault();
       resetForm(evt);
     }
