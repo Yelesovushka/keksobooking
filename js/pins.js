@@ -21,7 +21,8 @@
 
     pinElement.addEventListener('click', function (evt) {
       window.card.fillCard(pin);
-      window.cardVisibility.show(evt, pinElement);
+      window.cardVisibility.show(evt);
+      document.addEventListener('keydown', window.cardVisibility.onEscape);
     });
 
     return pinElement;

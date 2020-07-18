@@ -10,72 +10,48 @@
   var formFilters = document.querySelector('.map__filters');
 
   var pinsCopy = [];
-  /*
-  function filterBySelect(pinProperty, select) {
-    if(select.value !== 'any') {
-      pinsCopy.filter(function (pin) {
-        return pin.offer[pinProperty] === select.value;
-      });
-    }
-  }*/
-
-  function filterBySelect(pinProperty, select, rank) {
-    if (select.value === 'any' || pinProperty === select.value) {
-      rank++;
-    }
-    return rank;
-  }
 
   function filterPins() {
     var filteredPins = pinsCopy;
     var FILTERS_COUNT = 5;
-    console.log(filteredPins);
     filteredPins = pinsCopy.filter(function (pin) {
       var rank = 0;
 
       rank = filterBySelect(pin.offer.type, houseType, rank);
       rank = filterByPrice(pin.offer.price, rank);
       rank = filterBySelect(pin.offer.rooms, houseRooms, rank);
-      rank = filterByGuests(pin.offer.guests, rank);
+      rank = filterBySelect(pin.offer.guests, houseGuests, rank);
       rank = filterByFeatures(pin.offer.features, rank);
-
       return rank === FILTERS_COUNT;
     });
 
-    console.log(filteredPins);
     window.pins.resetPins();
     window.helpers.hideElement(document.querySelector('.popup'));
     window.pins.renderPins(filteredPins);
   }
 
-  function filterByPrice(price, rank) {
-    var result;
-
-    if (housePrice.value === 'any') {
-      result = true;
-    } else if (price <= 10000) {
-      result = housePrice.value === 'low';
-    } else if (price >= 50000) {
-      result = housePrice.value === 'high';
-    } else {
-      result = housePrice.value === 'middle';
-    }
-
-    if (result) {
+  function filterBySelect(pinProperty, select, rank) {
+    if (select.value === 'any' || pinProperty.toString() === select.value) {
       rank++;
     }
-
     return rank;
   }
 
-
-  function filterByGuests(guests, rank) {
+  function filterByPrice(price, rank) {
     var result;
 
-    if (guests > 3) {
-      result = houseGuests.value === 'any';
-    } else {
-      result = houseGuests.value === guests;
+    switch (housePrice.value) {
+      case 'low':
+        result = price <= 10000;
+        break;
+      case 'middle':
+        result = price > 10000 && price < 50000;
+        break;
+      case 'high':
+        result = price >= 50000;
+        break;
+      default:
+        result = true;
     }
 
     if (result) {
@@ -86,12 +62,12 @@
   }
 
   function filterByFeatures(features, rank) {
-    var checkFeatures = houseFeaturesArr.filter(function (elem) {
+    var checkedFeatures = houseFeaturesArr.filter(function (elem) {
       return elem.checked === true;
     });
 
-    var result = checkFeatures.every(function (elem) {
-      return features.includes(elem);
+    var result = checkedFeatures.every(function (elem) {
+      return features.includes(elem.value);
     });
 
     if (result) {
@@ -102,7 +78,6 @@
   }
 
   function onPinsFilterChange() {
-    console.log(pinsCopy);
     window.debounce(filterPins);
   }
 
@@ -111,6 +86,21 @@
       pinsCopy = pinsArray.slice();
 
       formFilters.addEventListener('change', onPinsFilterChange);
+    },
+    reset: function () {
+      var selects = document.querySelectorAll('.map__filter');
+      var checkboxes = document.querySelectorAll('.map__checkbox');
+
+      pinsCopy = [];
+      formFilters.removeEventListener('change', onPinsFilterChange);
+
+      for(var i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].checked = false;
+      }
+
+      for(var j = 0; j < selects.length; j++) {
+        selects[j].options[0].selected = true;
+      }
     }
   };
 

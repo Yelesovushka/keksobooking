@@ -62,6 +62,7 @@
       getAddressRoundPin();
       window.pins.resetPins();
       window.helpers.hideElement(document.querySelector('.map__card'));
+      window.filters.reset();
       adForm.classList.add('ad-form--disabled');
       map.classList.add('map--faded');
       mainPin.addEventListener('mousedown', showPage);
