@@ -1,8 +1,8 @@
 'use strict';
 
-// валидация формы
-
 (function () {
+  var ESC_KEY_CODE = 27;
+  var ENTER_KEY_CODE = 13;
   var titleInput = document.querySelector('#title');
   var priceInput = document.querySelector('#price');
   var typeInput = document.querySelector('#type');
@@ -12,54 +12,7 @@
   var checkoutInput = document.querySelector('#timeout');
   var adForm = document.querySelector('.ad-form');
   var inputs = adForm.querySelectorAll('input, select');
-  var submitBtn = adForm.querySelector('.ad-form__submit');
   var resetButton = adForm.querySelector('.ad-form__reset');
-
-  function syncRoomAndGuestInputs() {
-    if (roomInput.value === '1' && guestInput.value !== '1') {
-      roomInput.setCustomValidity('1 комната для 1 гостя');
-    } else if (roomInput.value === '2' && guestInput.value !== '1' && guestInput.value !== '2') {
-      roomInput.setCustomValidity('2 комнаты для 1 или 2 гостей');
-    } else if (roomInput.value === '3' && guestInput.value === '100') {
-      roomInput.setCustomValidity('3 комнаты для 1, 2 или 3 гостей');
-    } else if (roomInput.value === '100' && guestInput.value !== '0') {
-      roomInput.setCustomValidity('100 комнат не для гостей');
-    } else {
-      roomInput.setCustomValidity('');
-    }
-
-    if (guestInput.value === '1' && roomInput.value === '100') {
-      guestInput.setCustomValidity('Для 1 гостя - 1, 2 или 3 комнаты');
-    } else if (guestInput.value === '2' && roomInput.value !== '2' && roomInput.value !== '3') {
-      guestInput.setCustomValidity('Для 2 гостей - 2 или 3 комнаты');
-    } else if (guestInput.value === '3' && roomInput.value !== '3') {
-      guestInput.setCustomValidity('Для 3 гостей - 3 комнаты');
-    } else if (guestInput.value === '0' && roomInput.value !== '100') {
-      guestInput.setCustomValidity('100 комнат не для гостей');
-    } else {
-      guestInput.setCustomValidity('');
-    }
-  }
-
-  function setMinPriceOnRoom() {
-    var minPrice;
-
-    switch (typeInput.value) {
-      case 'flat':
-        minPrice = 1000;
-        break;
-      case 'bungalo':
-        minPrice = 0;
-        break;
-      case 'house':
-        minPrice = 5000;
-        break;
-      default:
-        minPrice = 10000;
-    }
-
-    return minPrice;
-  }
 
   function checkValidity() {
     var input;
@@ -98,8 +51,7 @@
     document.addEventListener('click', onMessageClick);
     document.addEventListener('keydown', onMessageKeydown);
 
-    adForm.reset();
-    window.page.reset();
+    resetForm();
   }
 
   function onMessageClick(evt) {
@@ -107,7 +59,7 @@
   }
 
   function onMessageKeydown(evt) {
-    if (evt.keyCode === 27) {
+    if (evt.keyCode === ESC_KEY_CODE) {
       hideMessage(evt);
     }
   }
@@ -133,92 +85,118 @@
     document.addEventListener('keydown', onMessageKeydown);
   }
 
-  function resetForm(evt) {
-    evt.preventDefault();
+  function resetForm() {
+    adForm.reset();
     window.page.reset();
+    priceInput.placeholder = '1000';
   }
 
   function onResetClick(evt) {
+    evt.preventDefault();
     resetForm(evt);
   }
 
   function onResetKeydown(evt) {
-    if (evt.keyCode === 13) {
+    if (evt.keyCode === ENTER_KEY_CODE) {
+      evt.preventDefault();
       resetForm(evt);
     }
   }
 
-  titleInput.addEventListener('invalid', function () {
-    if (titleInput.validity.valueMissing) {
-      titleInput.setCustomValidity('Обязательное для заполнения поле');
-    } else {
-      titleInput.setCustomValidity('');
-    }
-  });
-
-  titleInput.addEventListener('input', function () {
+  function setTitleCustomValidity() {
     var valueLength = titleInput.value.length;
     var minLength = titleInput.minLength;
     var maxLength = titleInput.maxLength;
 
-    if (valueLength < minLength) {
+    if (titleInput.validity.valueMissing) {
+      titleInput.setCustomValidity('Обязательное для заполнения поле');
+    } else if (valueLength < minLength) {
       titleInput.setCustomValidity('Введите еще ' + (minLength - valueLength) + ' символов');
     } else if (valueLength > maxLength) {
       titleInput.setCustomValidity('Удалите ' + (valueLength - maxLength) + ' символов');
     } else {
       titleInput.setCustomValidity('');
     }
-  });
+  }
 
-  typeInput.addEventListener('change', function () {
-    priceInput.placeholder = setMinPriceOnRoom();
-  });
+  function setMinPriceOnRoom() {
+    var minPrice;
 
-  priceInput.addEventListener('invalid', function () {
-    if (priceInput.validity.valueMissing) {
-      priceInput.setCustomValidity('Обязательное для заполнения поле');
-    } else {
-      priceInput.setCustomValidity('');
+    switch (typeInput.value) {
+      case 'flat':
+        minPrice = 1000;
+        break;
+      case 'bungalo':
+        minPrice = 0;
+        break;
+      case 'house':
+        minPrice = 5000;
+        break;
+      default:
+        minPrice = 10000;
     }
-  });
 
-  priceInput.addEventListener('input', function () {
-    var value = priceInput.value;
-    var max = priceInput.max;
+    return minPrice;
+  }
+
+  function setPriceCustomValidity() {
+    var value = parseInt(priceInput.value, 10);
+    var max = parseInt(priceInput.max, 10);
     var min = setMinPriceOnRoom();
 
-    if (value > max) {
+    if (priceInput.validity.valueMissing) {
+      priceInput.setCustomValidity('Обязательное для заполнения поле');
+    } else if (value > max) {
       priceInput.setCustomValidity('Максимальная цена превышена на ' + (value - max));
     } else if (value < min) {
       priceInput.setCustomValidity('Минимальная цена занижена на ' + (min - value));
     } else {
       priceInput.setCustomValidity('');
     }
+  }
+
+  function setGuestsCustomValidity() {
+    if (guestInput.value === '1' && roomInput.value === '100') {
+      guestInput.setCustomValidity('Для 1 гостя - 1, 2 или 3 комнаты');
+    } else if (guestInput.value === '2' && roomInput.value !== '2' && roomInput.value !== '3') {
+      guestInput.setCustomValidity('Для 2 гостей - 2 или 3 комнаты');
+    } else if (guestInput.value === '3' && roomInput.value !== '3') {
+      guestInput.setCustomValidity('Для 3 гостей - 3 комнаты');
+    } else if (guestInput.value === '0' && roomInput.value !== '100') {
+      guestInput.setCustomValidity('100 комнат не для гостей');
+    } else {
+      guestInput.setCustomValidity('');
+    }
+  }
+
+  titleInput.addEventListener('invalid', setTitleCustomValidity);
+  titleInput.addEventListener('input', setTitleCustomValidity);
+
+  typeInput.addEventListener('change', function () {
+    priceInput.placeholder = setMinPriceOnRoom();
   });
 
+  typeInput.addEventListener('change', function () {
+    setPriceCustomValidity();
+    priceInput.placeholder = setMinPriceOnRoom();
+  });
+
+  priceInput.addEventListener('input', setPriceCustomValidity);
+  priceInput.addEventListener('invalid', setPriceCustomValidity);
+
   checkinInput.addEventListener('change', function () {
-    if (checkinInput.value === '12:00') {
-      checkoutInput.value = '12:00';
-    } else if (checkinInput.value === '13:00') {
-      checkoutInput.value = '13:00';
-    } else {
-      checkoutInput.value = '14:00';
-    }
+    checkoutInput.value = checkinInput.value;
   });
 
   checkoutInput.addEventListener('change', function () {
-    if (checkoutInput.value === '12:00') {
-      checkinInput.value = '12:00';
-    } else if (checkoutInput.value === '13:00') {
-      checkinInput.value = '13:00';
-    } else {
-      checkinInput.value = '14:00';
-    }
+    checkinInput.value = checkoutInput.value;
   });
 
-  roomInput.addEventListener('change', syncRoomAndGuestInputs);
-  guestInput.addEventListener('change', syncRoomAndGuestInputs);
-  submitBtn.addEventListener('click', onSubmitClick);
+  roomInput.addEventListener('change', setGuestsCustomValidity);
+  guestInput.addEventListener('change', setGuestsCustomValidity);
+
+  adForm.addEventListener('submit', onSubmitClick);
+
   resetButton.addEventListener('click', onResetClick);
   resetButton.addEventListener('keydown', onResetKeydown);
 })();

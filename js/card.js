@@ -1,7 +1,5 @@
 'use strict';
 
-// отрисовка карточки на карте
-
 (function () {
   var cardTemplate = document.querySelector('#card')
         .content
