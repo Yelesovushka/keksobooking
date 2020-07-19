@@ -173,10 +173,6 @@
   titleInput.addEventListener('input', setTitleCustomValidity);
 
   typeInput.addEventListener('change', function () {
-    priceInput.placeholder = setMinPriceOnRoom();
-  });
-
-  typeInput.addEventListener('change', function () {
     setPriceCustomValidity();
     priceInput.placeholder = setMinPriceOnRoom();
   });

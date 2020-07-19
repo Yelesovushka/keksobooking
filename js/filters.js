@@ -10,7 +10,8 @@
   var houseFeatures = document.querySelectorAll('.map__checkbox');
   var houseFeaturesArr = Array.prototype.slice.call(houseFeatures);
   var formFilters = document.querySelector('.map__filters');
-
+  var selects = document.querySelectorAll('.map__filter');
+  var checkboxes = document.querySelectorAll('.map__checkbox');
   var pinsCopy = [];
 
   function filterPins() {
@@ -66,7 +67,7 @@
 
   function filterByFeatures(features, rank) {
     var checkedFeatures = houseFeaturesArr.filter(function (elem) {
-      return elem.checked === true;
+      return elem.checked;
     });
 
     var result = checkedFeatures.every(function (elem) {
@@ -91,9 +92,6 @@
       formFilters.addEventListener('change', onPinsFilterChange);
     },
     reset: function () {
-      var selects = document.querySelectorAll('.map__filter');
-      var checkboxes = document.querySelectorAll('.map__checkbox');
-
       pinsCopy = [];
       formFilters.removeEventListener('change', onPinsFilterChange);
 
