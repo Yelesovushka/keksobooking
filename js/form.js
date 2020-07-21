@@ -88,6 +88,7 @@
   function resetForm() {
     adForm.reset();
     window.page.reset();
+    window.previewImage.reset();
     priceInput.placeholder = '1000';
   }
 

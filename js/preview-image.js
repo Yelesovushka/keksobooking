@@ -34,4 +34,10 @@
     chooseFile(fileChooserPhoto, previewPhoto);
   });
 
+  window.previewImage = {
+    reset: function () {
+      previewAvatar.src = 'img/muffin-grey.svg';
+      previewPhoto.src = 'img/muffin-grey.svg';
+    }
+  };
 })();
