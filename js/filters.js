@@ -3,6 +3,8 @@
 (function () {
   var FILTERS_COUNT = 5;
   var DEFAULT_SELECT_VALUE = 'any';
+  var PRICE_LOW = 10000;
+  var PRICE_HIGH = 50000;
   var houseType = document.querySelector('#housing-type');
   var housePrice = document.querySelector('#housing-price');
   var houseRooms = document.querySelector('#housing-rooms');
@@ -46,13 +48,13 @@
 
     switch (housePrice.value) {
       case 'low':
-        result = price <= 10000;
+        result = price <= PRICE_LOW;
         break;
       case 'middle':
-        result = price > 10000 && price < 50000;
+        result = price > PRICE_LOW && price < PRICE_HIGH;
         break;
       case 'high':
-        result = price >= 50000;
+        result = price >= PRICE_HIGH;
         break;
       default:
         result = true;
